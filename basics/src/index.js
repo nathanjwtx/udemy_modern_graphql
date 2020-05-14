@@ -9,7 +9,15 @@ const typeDefs = `
 		id: ID!
 		male: Boolean!
 		gpa: Float
-		}
+		me: User!
+	}
+		
+	type User {
+		id: ID!
+		name: String!
+		age: Int
+		email: String
+	}
 `;
 
 // resolvers
@@ -32,6 +40,14 @@ const resolvers = {
 		},
 		gpa() {
 			return null
+		},
+		me() {
+			return {
+				id: 'Abc456',
+				name: 'nathan',
+				age: 48,
+				email: 'someone@gmail.com'
+			}
 		}
 	}
 };
