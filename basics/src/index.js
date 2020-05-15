@@ -3,13 +3,11 @@ import { GraphQLServer } from 'graphql-yoga';
 // type definitions (schema)
 const typeDefs = `
 	type Query {
-		hello: String!
-		name: String!
-		age: Int!
-		id: ID!
-		male: Boolean!
-		gpa: Float
+		greeting(name: String): String!
 		me: User!
+		add(num1: Float!, num2: Float!): Float!
+		add2(numbers: [Float!]!): Float!
+		grades: [Int!]!
 	}
 		
 	type User {
@@ -23,23 +21,12 @@ const typeDefs = `
 // resolvers
 const resolvers = {
 	Query: {
-		hello() {
-			return 'hello nathan'
-		},
-		name() {
-			return 'Doge'
-		},
-		age() {
-			return 48
-		},
-		male() {
-			return true
-		},
-		id() {
-			return 'Abc123'
-		},
-		gpa() {
-			return null
+		greeting(parent, args) {
+			if (args.name) {
+				return `hello, ${args.name}!`
+			} else {
+				return 'hello'
+			}
 		},
 		me() {
 			return {
@@ -47,6 +34,21 @@ const resolvers = {
 				name: 'nathan',
 				age: 48,
 				email: 'someone@gmail.com'
+			}
+		},
+		add(parent, args) {
+			return args.num1 + args.num2
+		},
+		grades(parent, args, ctx, info) {
+			return [30, 40, 50]
+		},
+		add2(parent, args, ctx, info) {
+			if (args.numbers.length === 0) {
+				return 0
+			} else {
+				return args.numbers.reduce((accumulator, currentValue) => {
+					return accumulator + currentValue
+				})
 			}
 		}
 	}
