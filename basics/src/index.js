@@ -57,6 +57,13 @@ const resolvers = {
 				return post.author === parent.id
 			})
 		}
+	},
+	Comment: {
+		author(parent, args, ctx, info) {
+			return users.find((user) => {
+				return user.id === parent.author
+			})
+		}
 	}
 };
 
