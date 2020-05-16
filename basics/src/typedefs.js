@@ -14,6 +14,7 @@ const typeDefs = `
 		age: Int
 		email: String
 		posts: [Post!]!
+		comments: [Comment!]!
 	}
 	
 	type Post {
@@ -22,12 +23,14 @@ const typeDefs = `
 		body: String!
 		published: Boolean!
 		author: User!
+		comments: [Comment!]!
 	}
 	
 	type Comment {
 		id: ID!
 		text: String!
 		author: User!
+		post: Post!
 	}
 `;
 

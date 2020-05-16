@@ -32,24 +32,34 @@ const posts = [{
 	body: 'something something post 3',
 	published: true,
 	author: '2'
+}, {
+	id: '4',
+	title: 'post 4 title',
+	body: 'blah blah wibble',
+	published: true,
+	author: '3'
 }]
 
 const comments = [{
 	id: '1',
 	text: 'first up, comment 1',
-	author: '1'
+	author: '1',
+	post: '1'
 }, {
 	id: '2',
 	text: 'and here we have number 2',
-	author: '1'
+	author: '1',
+	post: '1'
 }, {
 	id: '3',
 	text: 'last but not least, number 3',
-	author: '3'
+	author: '3',
+	post: '2'
 }, {
 	id: '4',
 	text: 'spoke too soon, here`s number 4',
-	author: '2'
+	author: '2',
+	post: '2'
 }]
 
 export { users, posts, comments }
