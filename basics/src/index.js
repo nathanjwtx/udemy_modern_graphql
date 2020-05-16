@@ -1,7 +1,7 @@
 import { GraphQLServer } from 'graphql-yoga';
 
 import { typeDefs } from './typedefs';
-import { users, posts } from './demodata'
+import { users, posts, comments } from './demodata'
 
 // resolvers
 const resolvers = {
@@ -30,7 +30,7 @@ const resolvers = {
 				})
 			}
 		},
-		posts(parent, args, cfx, info) {
+		posts(parent, args, ctx, info) {
 			if (!args.query) {
 				return posts
 			} else {
@@ -39,12 +39,22 @@ const resolvers = {
 						post.title.toLowerCase().includes(args.query.toLowerCase())
 				})
 			}
+		},
+		comments(parent, args, ctx, info) {
+			return comments
 		}
 	},
 	Post: {
 		author(parent, args, ctx, info) {
 			return users.find((user) => {
 				return user.id === parent.author
+			})
+		}
+	},
+	User: {
+		posts(parent, args, ctx, info) {
+			return posts.filter((post) => {
+				return post.author === parent.id
 			})
 		}
 	}

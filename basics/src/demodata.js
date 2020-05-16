@@ -34,4 +34,18 @@ const posts = [{
 	author: '2'
 }]
 
-export { users, posts }
+const comments = [{
+	id: '1',
+	text: 'first up, comment 1'
+}, {
+	id: '2',
+	text: 'and here we have number 2'
+}, {
+	id: '3',
+	text: 'last but not least, number 3'
+}, {
+	id: '4',
+	text: 'spoke too soon, here`s number 4'
+}]
+
+export { users, posts, comments }
