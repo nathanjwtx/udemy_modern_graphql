@@ -48,7 +48,7 @@ const resolvers = {
 	Mutation: {
 		createUser(parent, args, ctx, info) {
 			const emailTaken = users.some((user) => {
-				return user.email === args.email
+				return user.email === args.data.email
 			})
 
 			if (emailTaken) {
@@ -57,7 +57,7 @@ const resolvers = {
 
 			const user = {
 				id: uuidv4(),
-				...args
+				...args.data
 			}
 
 			users.push(user)
@@ -66,15 +66,16 @@ const resolvers = {
 		},
 		createPost(parents, args, ctx, info) {
 			// check user exists and throw an error if not
-			const userExists = users.some((user) => user.id === args.author)
+			const userExists = users.some((user) => user.id === args.data.author)
 
+			console.log(args.data)
 			if (!userExists) {
 				throw new Error('user not found')
 			}
 
 			const post = {
 				id: uuidv4(),
-				...args
+				...args.data
 			}
 
 			posts.push(post)
@@ -82,13 +83,13 @@ const resolvers = {
 			return post
 		},
 		createComment(parents, args, ctx, info) {
-		  const postExists = posts.some((post) => post.id === args.post && post.published)
+		  const postExists = posts.some((post) => post.id === args.data.post && post.published)
 
 			if (!postExists) {
 				throw new Error("either post does not exist or is not published")
 			}
 
-			const userExists = users.some((user) => user.id === args.author)
+			const userExists = users.some((user) => user.id === args.data.author)
 
 			if (!userExists) {
 				throw new Error('user not found')
@@ -96,7 +97,7 @@ const resolvers = {
 
 			const comment = {
 				id: uuidv4(),
-				...args
+				...args.data
 			}
 
 			comments.push(comment)
