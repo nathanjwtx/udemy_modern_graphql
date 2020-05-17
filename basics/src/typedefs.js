@@ -7,6 +7,10 @@ const typeDefs = `
 		posts(query: String): [Post!]!
 		comments: [Comment!]!
 	}
+	
+	type Mutation {
+		createUser(name: String!, email: String!, age: Int): User!
+	}
 		
 	type User {
 		id: ID!

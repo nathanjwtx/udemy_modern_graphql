@@ -1,4 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga';
+import uuidv4 from 'uuid/dist/v4'
 
 import { typeDefs } from './typedefs';
 import { users, posts, comments } from './demodata'
@@ -42,6 +43,28 @@ const resolvers = {
 		},
 		comments(parent, args, ctx, info) {
 			return comments
+		}
+	},
+	Mutation: {
+		createUser(parent, args, ctx, info) {
+			const emailTaken = users.some((user) => {
+				return user.email === args.email
+			})
+
+			if (emailTaken) {
+				throw new Error('email address already in user')
+			}
+
+			const user = {
+				id: uuidv4(),
+				name: args.name,
+				email: args.email,
+				age: args.age
+			}
+
+			users.push(user)
+
+			return user
 		}
 	},
 	Post: {
