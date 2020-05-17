@@ -65,6 +65,26 @@ const resolvers = {
 			users.push(user)
 
 			return user
+		},
+		createPost(parents, args, ctx, info) {
+			// check user exists and throw an error if not
+			const userExists = users.some((user) => user.id === args.author)
+
+			if (!userExists) {
+				throw new Error('user not found')
+			}
+
+			const post = {
+				id: uuidv4(),
+				title: args.title,
+				body: args.body,
+				published: args.published,
+				author: args.author
+			}
+
+			posts.push(post)
+
+			return post
 		}
 	},
 	Post: {
