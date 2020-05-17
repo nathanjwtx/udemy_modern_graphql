@@ -1,5 +1,5 @@
 // demo user data
-const users = [{
+let users = [{
 	id: '1',
 	name: 'nathan',
 	email: 'nathan@email.com'
@@ -14,33 +14,33 @@ const users = [{
 	email: 'thor@email.com'
 }]
 
-const posts = [{
-	id: '1',
-	title: 'this is post 1 title',
-	body: 'your post body 1',
+let posts = [{
+	id: '4',
+	title: 'this is post 0 title',
+	body: 'your post body 0',
 	published: true,
+	author: '3'
+}, {
+	id: '1',
+	title: 'post number 1',
+	body: 'body for post 1',
+	published: false,
 	author: '1'
 }, {
 	id: '2',
-	title: 'post number 2',
-	body: 'body for post 2',
-	published: false,
-	author: '2'
+	title: 'post 2 title',
+	body: 'something something post 2',
+	published: true,
+	author: '1'
 }, {
 	id: '3',
 	title: 'post 3 title',
-	body: 'something something post 3',
-	published: true,
-	author: '2'
-}, {
-	id: '4',
-	title: 'post 4 title',
 	body: 'blah blah wibble',
 	published: true,
-	author: '3'
+	author: '2'
 }]
 
-const comments = [{
+let comments = [{
 	id: '1',
 	text: 'first up, comment 1',
 	author: '1',
@@ -59,7 +59,7 @@ const comments = [{
 	id: '4',
 	text: 'spoke too soon, here`s number 4',
 	author: '2',
-	post: '2'
+	post: '3'
 }]
 
 export { users, posts, comments }
