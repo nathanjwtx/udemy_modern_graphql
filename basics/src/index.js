@@ -1,5 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga';
-import uuidv4 from 'uuid/dist/v4'
+import { v4 as uuidv4 } from 'uuid'
 
 import { typeDefs } from './typedefs';
 import { users, posts, comments } from './demodata'
@@ -57,9 +57,7 @@ const resolvers = {
 
 			const user = {
 				id: uuidv4(),
-				name: args.name,
-				email: args.email,
-				age: args.age
+				...args
 			}
 
 			users.push(user)
@@ -76,10 +74,7 @@ const resolvers = {
 
 			const post = {
 				id: uuidv4(),
-				title: args.title,
-				body: args.body,
-				published: args.published,
-				author: args.author
+				...args
 			}
 
 			posts.push(post)
@@ -101,9 +96,7 @@ const resolvers = {
 
 			const comment = {
 				id: uuidv4(),
-				text: args.text,
-				post: args.post,
-				author: args.author
+				...args
 			}
 
 			comments.push(comment)
