@@ -1,4 +1,4 @@
-import { GraphQLServer } from 'graphql-yoga';
+import { GraphQLServer } from 'graphql-yoga'
 import { v4 as uuidv4 } from 'uuid'
 
 import { typeDefs } from './typedefs';
@@ -90,7 +90,7 @@ const resolvers = {
 		  const postExists = data.posts.some((post) => post.id === args.data.post && post.published)
 
 			if (!postExists) {
-				throw new Error("either post does not exist or is not published")
+				throw new Error('either post does not exist or is not published')
 			}
 
 			const userExists = data.users.some((user) => user.id === args.data.author)
@@ -130,6 +130,33 @@ const resolvers = {
 			data.comments = data.comments.filter((comment) => comment.author !== args.id)
 
 			return deletedUsers[0]
+		},
+		deletePost(parents, args, ctx, info) {
+		  const postExists = data.posts.findIndex((post) => post.id === args.id)
+
+			if (postExists === -1) {
+				throw new Error ('Delete post: post does not exist')
+			}
+
+			// delete comments on the post
+			data.comments = data.comments.filter((comment) => comment.post !== args.id)
+
+			// remove post from Posts
+			const deletedPosts = data.posts.splice(postExists, 1)
+
+			// deletedPosts is an array containing a single Post that was deleted
+			return deletedPosts[0]
+		},
+		deleteComment(parents, args, ctx, info) {
+		  const commentExists = data.comments.findIndex((comment) => comment.id === args.id)
+
+			if (commentExists === -1) {
+				throw new Error ('Delete comment: comment does not exists')
+			}
+
+			const deletedComment = data.comments.splice(commentExists, 1)
+
+			return deletedComment[0]
 		}
 	},
 	Post: {

@@ -14,6 +14,8 @@ const typeDefs = `
 		createComment(data: CreateCommentInput!): Comment!
 		
 		deleteUser(id: ID!): User!
+		deletePost(id: ID!): Post!
+		deleteComment(id: ID!): Comment!
 	}
 	
 	input CreateUserInput {
