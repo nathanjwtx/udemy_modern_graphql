@@ -1,5 +1,5 @@
 // demo user data
-let users = [{
+const users = [{
 	id: '1',
 	name: 'nathan',
 	email: 'nathan@email.com'
@@ -14,7 +14,7 @@ let users = [{
 	email: 'thor@email.com'
 }]
 
-let posts = [{
+const posts = [{
 	id: '4',
 	title: 'this is post 0 title',
 	body: 'your post body 0',
@@ -40,7 +40,7 @@ let posts = [{
 	author: '2'
 }]
 
-let comments = [{
+const comments = [{
 	id: '1',
 	text: 'first up, comment 1',
 	author: '1',
@@ -62,4 +62,9 @@ let comments = [{
 	post: '3'
 }]
 
-export { users, posts, comments }
+const db = {
+	users,
+	posts,
+	comments
+}
+export { db }
