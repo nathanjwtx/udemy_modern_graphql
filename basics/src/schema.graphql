@@ -79,3 +79,8 @@ type Comment {
     author: User!
     post: Post
 }
+
+type Subscription {
+    count: Int!
+    comment(postId: ID!): Comment!
+}
