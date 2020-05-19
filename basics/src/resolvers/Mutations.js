@@ -20,6 +20,31 @@ const Mutation = {
 
 		return user
 	},
+	updateUser(parent, { id, data }, { db }, info) {
+		const user = db.users.find((user) => user.id === id)
+
+		if (!user) {
+			throw new Error('Update user: user not found')
+		}
+
+		if (typeof data.email === 'string') {
+			const emailTaken = db.users.some((user) => user.email === data.email)
+			if (emailTaken) {
+				throw new Error('Update user: email in use')
+			}
+			user.email = data.email
+		}
+
+		if (typeof data.name === 'string') {
+			user.name = data.name
+		}
+
+		if (typeof data.age !== 'undefined') {
+			user.age = data.age
+		}
+
+		return user
+	},
 	createPost(parents, args, {db}, info) {
 		// check user exists and throw an error if not
 		const userExists = db.users.some((user) => user.id === args.data.author)
@@ -34,6 +59,27 @@ const Mutation = {
 		}
 
 		db.posts.push(post)
+
+		return post
+	},
+	updatePost(parent, { id, data }, { db }, info) {
+		const post = db.posts.find((post) => post.id === id)
+
+		if (!post) {
+			throw new Error('Update post: post not found')
+		}
+
+		if (typeof data.published === 'boolean') {
+			post.published = data.published
+		}
+
+		if (typeof data.title === 'string') {
+			post.title = data.title
+		}
+
+		if (typeof data.body === 'string') {
+			post.body = data.body
+		}
 
 		return post
 	},
@@ -56,6 +102,19 @@ const Mutation = {
 		}
 
 		db.comments.push(comment)
+
+		return comment
+	},
+	updateComment(parent, { id, data }, { db }, info) {
+		const comment = db.comments.find((comment) => comment.id === id)
+
+		if (!comment) {
+			throw new Error('Update comment: comment not found')
+		}
+
+		if (typeof data.text === 'string') {
+			comment.text = data.text
+		}
 
 		return comment
 	},
