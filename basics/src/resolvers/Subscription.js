@@ -14,6 +14,7 @@ const Subscription = {
 		}
 	},
 	comment: {
+		// comments on a specific post id
 		subscribe(parent, { postId }, { db, pubsub }, info) {
 			const post = db.posts.find((post) => post.id === postId && post.published)
 
@@ -25,8 +26,8 @@ const Subscription = {
 		}
 	},
 	post: {
-		subscribe(parent, { postId }, { pubsub }, info) {
-			return pubsub.asyncIterator(`post ${postId}`)
+		subscribe(parent, args, { pubsub }, info) {
+			return pubsub.asyncIterator('post')
 		}
 	}
 }

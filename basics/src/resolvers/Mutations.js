@@ -61,7 +61,13 @@ const Mutation = {
 		db.posts.push(post)
 		// only publish subscription if published property is true
 		if (args.data.published) {
-			pubsub.publish(`post ${args.data.post}`, {post: post})
+			pubsub.publish('post', {
+				post:
+					{
+						mutation: 'CREATE',
+						data: post
+					}
+			})
 		}
 		return post
 	},
@@ -145,7 +151,7 @@ const Mutation = {
 
 		return deletedUsers[0]
 	},
-	deletePost(parents, args, {db}, info) {
+	deletePost(parents, args, {db, pubsub}, info) {
 		const postExists = db.posts.findIndex((post) => post.id === args.id)
 
 		if (postExists === -1) {
@@ -156,10 +162,22 @@ const Mutation = {
 		db.comments = db.comments.filter((comment) => comment.post !== args.id)
 
 		// remove post from Posts
-		const deletedPosts = db.posts.splice(postExists, 1)
+		// const deletedPosts = db.posts.splice(postExists, 1)
+
+		// use array destructuring. only one name is required as there will only be one element in the array
+		const [post] = db.posts.splice(postExists, 1)
+
+		if (post.published) {
+			pubsub.publish('post', {
+				post: {
+					mutation: 'DELETED',
+					data: post
+				}
+			})
+		}
 
 		// deletedPosts is an array containing a single Post that was deleted
-		return deletedPosts[0]
+		return post
 	},
 	deleteComment(parents, args, {db}, info) {
 		const commentExists = db.comments.findIndex((comment) => comment.id === args.id)
