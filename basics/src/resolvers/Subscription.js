@@ -23,6 +23,11 @@ const Subscription = {
 
 			return pubsub.asyncIterator(`comment ${postId}`)
 		}
+	},
+	post: {
+		subscribe(parent, { postId }, { pubsub }, info) {
+			return pubsub.asyncIterator(`post ${postId}`)
+		}
 	}
 }
 

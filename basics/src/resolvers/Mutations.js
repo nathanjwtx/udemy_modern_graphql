@@ -45,7 +45,7 @@ const Mutation = {
 
 		return user
 	},
-	createPost(parents, args, {db}, info) {
+	createPost(parents, args, {db, pubsub}, info) {
 		// check user exists and throw an error if not
 		const userExists = db.users.some((user) => user.id === args.data.author)
 
@@ -59,7 +59,10 @@ const Mutation = {
 		}
 
 		db.posts.push(post)
-
+		// only publish subscription if published property is true
+		if (args.data.published) {
+			pubsub.publish(`post ${args.data.post}`, {post: post})
+		}
 		return post
 	},
 	updatePost(parent, { id, data }, { db }, info) {
