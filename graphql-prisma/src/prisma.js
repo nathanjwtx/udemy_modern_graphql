@@ -5,34 +5,53 @@ const prisma = new Prisma({
 	endpoint: 'http://localhost:4466'
 })
 
-// const createPostForUser =  async (authorId, data) => {
-// 	const post = await prisma.mutation.createPost({
-// 		data: {
-// 			...data,
-// 			author: {
-// 				connect: {
-// 					id: authorId
-// 				}
-// 			}
-// 		}
-// 	}, '{ id }')
-// 	const user = await prisma.query.user({
-// 		where: {
-// 			id: authorId
-// 		}
-// 	}, '{ id name email post { id title published }}')
-// 	return user
-// }
-//
+prisma.exists.Post({
+	id: 'ckamiw59b01170988gefbgx0f'
+}).then(result => {
+	console.log(result)
+})
+
+const createPostForUser =  async (authorId, data) => {
+	const userExists = await prisma.exists.User({
+		id: authorId
+	})
+
+	if (!userExists) {
+		throw new Error('the user does not exist')
+	}
+
+	const post = await prisma.mutation.createPost({
+		data: {
+			...data,
+			author: {
+				connect: {
+					id: authorId
+				}
+			}
+		}
+	}, '{ author { id name email posts { id title published }}}')
+	return post.author
+}
+
 // createPostForUser('ckaimetie002e07461oap8a83', {
 // 	title: 'nathan\'s second prisma post',
 // 	published: true,
-// 	body: 'First one worked so this should as well!'
+// 	body: 'Second one worked so this should as well!'
 // }).then((user) => {
 // 	console.log(JSON.stringify(user))
+// }).catch(error => {
+// 	console.log(`Error: ${error.message}`)
 // })
 
 const updatePostForUser = async (postId, data) => {
+	const postExists = await prisma.exists.Post({
+		id: postId
+	})
+
+	if (!postExists) {
+		throw new Error('Post does not exist')
+	}
+
 	const post = await prisma.mutation.updatePost({
 		where: {
 			id: postId
@@ -40,22 +59,21 @@ const updatePostForUser = async (postId, data) => {
 		data: {
 			...data
 		}
-	}, '{ id author { id name }}')
+	}, '{ author { id name posts { id title }}}')
 
-	return await prisma.query.user({
-		where: {
-			id: post.author.id
-		}
-	}, '{ id name posts { id title }}')
+	return post.author
 }
 
-updatePostForUser('ckamiw59b01170988gefbgx0f', {
-	published: false,
-	body: 'ok, i changed my mind yet again'
-})
-	.then((result) => {
-		console.log(JSON.stringify(result))
-	})
+// updatePostForUser('ckamh4qnr00bk0988qlyvffjn', {
+// 	published: false,
+// 	body: 'charlie changed her mind yet again'
+// })
+// 	.then((post) => {
+// 		console.log(JSON.stringify(post, undefined, 4))
+// 	})
+// 	.catch(error => {
+// 		console.log(`Error: ${error.message}`)
+// 	})
 
 // prisma.mutation.createPost({
 // 	data: {
