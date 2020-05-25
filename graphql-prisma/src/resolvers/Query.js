@@ -15,24 +15,26 @@ const Query = {
 			published: false
 		}
 	},
-	users(parent, args, ctx, info) {
-		if (!args.query) {
-			return ctx.db.users
-		} else {
-			return ctx.db.users.filter((user) => {
-				return user.name.toLowerCase().includes(args.query.toLowerCase())
-			})
-		}
+	users(parent, args, { prisma }, info) {
+		// if (!args.query) {
+		// 	return db.users
+		// } else {
+		// 	return db.users.filter((user) => {
+		// 		return user.name.toLowerCase().includes(args.query.toLowerCase())
+		// 	})
+		// }
+		return prisma.query.users(null, info)
 	},
-	posts(parent, args, { db }, info) {
-		if (!args.query) {
-			return db.posts
-		} else {
-			return db.posts.filter((post) => {
-				return post.body.toLowerCase().includes(args.query.toLowerCase()) ||
-					post.title.toLowerCase().includes(args.query.toLowerCase())
-			})
-		}
+	posts(parent, args, { prisma }, info) {
+		// if (!args.query) {
+		// 	return db.posts
+		// } else {
+		// 	return db.posts.filter((post) => {
+		// 		return post.body.toLowerCase().includes(args.query.toLowerCase()) ||
+		// 			post.title.toLowerCase().includes(args.query.toLowerCase())
+		// 	})
+		// }
+		return prisma.query.posts(null, info)
 	},
 	comments(parent, args, { db }, info) {
 		return db.comments
