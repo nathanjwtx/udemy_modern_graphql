@@ -1,24 +1,21 @@
 /* eslint-disable no-unused-vars */
+
+/* NOTE: this is the node.js api running on localhost:4000 which limits what the end user can access from the prisma
+api running on localhost:4466 */
+
 import {v4 as uuidv4} from 'uuid'
 
 const Mutation = {
-	createUser(parent, args, {db}, info) {
-		const emailTaken = db.users.some((user) => {
-			return user.email === args.data.email
-		})
+	async createUser(parent, args, {prisma}, info) {
+		// data is the name given to the object in schema.graphql
+		console.log(args)
+		const emailTaken = await prisma.exists.User({ email: args.data.email})
 
 		if (emailTaken) {
-			throw new Error('email address already in user')
+			throw new Error('email in use')
 		}
 
-		const user = {
-			id: uuidv4(),
-			...args.data
-		}
-
-		db.users.push(user)
-
-		return user
+		return prisma.mutation.createUser({data: args.data}, info)
 	},
 	updateUser(parent, { id, data }, { db }, info) {
 		const user = db.users.find((user) => user.id === id)
@@ -45,28 +42,15 @@ const Mutation = {
 
 		return user
 	},
-	deleteUser(parents, args, {db}, info) {
-		const userExists = db.users.findIndex((user) => user.id === args.id)
+	async deleteUser(parents, { id }, {prisma}, info) {
 
-		if (userExists === -1) {
-			throw new Error('Delete user: user does not exist')
+		const userExists = await prisma.exists.User({ id })
+
+		if (!userExists) {
+			throw new Error('User does not exist')
 		}
 
-		const deletedUsers = db.users.splice(userExists, 1)
-
-		db.posts = db.posts.filter((post) => {
-			const match = post.author === args.id
-
-			if (match) {
-				db.comments = db.comments.filter((comment) => comment.post !== post.id)
-			}
-
-			return !match
-		})
-
-		db.comments = db.comments.filter((comment) => comment.author !== args.id)
-
-		return deletedUsers[0]
+		return prisma.mutation.deleteUser({where: {id}}, info)
 	},
 	createPost(parents, args, {db, pubsub}, info) {
 		// check user exists and throw an error if not
