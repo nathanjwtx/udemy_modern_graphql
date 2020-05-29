@@ -3,19 +3,30 @@
 /* NOTE: this is the node.js api running on localhost:4000 which limits what the end user can access from the prisma
 api running on localhost:4466 */
 
-import {v4 as uuidv4} from 'uuid'
-import {prisma} from '../prisma'
+import bcrypt from 'bcryptjs'
 
 const Mutation = {
-	async createUser(parent, args, {prisma}, info) {
+	async createUser(parent, {data: {name, email, password}}, {prisma}, info) {
 		// data is the name given to the object in schema.graphql
-		const emailTaken = await prisma.exists.User({ email: args.data.email})
+		if (password.length < 8) {
+			throw new Error('Password must be 8 characters or longer')
+		}
+
+		const pwd = await bcrypt.hash(password, 10)
+
+		const emailTaken = await prisma.exists.User({ email})
 
 		if (emailTaken) {
 			throw new Error('email in use')
 		}
 
-		return prisma.mutation.createUser({data: args.data}, info)
+		return prisma.mutation.createUser({
+				data: {
+					name,
+					email,
+					password: pwd
+				}
+			}, info)
 	},
 	async updateUser(parent, { id, data }, { prisma }, info) {
 		return prisma.mutation.updateUser({
