@@ -4,6 +4,7 @@
 api running on localhost:4466 */
 
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 const Mutation = {
 	async createUser(parent, {data: {name, email, password}}, {prisma}, info) {
@@ -20,13 +21,18 @@ const Mutation = {
 			throw new Error('email in use')
 		}
 
-		return prisma.mutation.createUser({
+		const user = await prisma.mutation.createUser({
 				data: {
 					name,
 					email,
 					password: pwd
 				}
-			}, info)
+			})
+
+		return {
+			user,
+			token: jwt.sign({userid: user.id}, 'wibble123')
+		}
 	},
 	async updateUser(parent, { id, data }, { prisma }, info) {
 		return prisma.mutation.updateUser({
