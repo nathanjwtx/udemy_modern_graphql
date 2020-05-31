@@ -6,7 +6,41 @@ api running on localhost:4466 */
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
+const testing = async () => {
+	const email = 'doge@email.io'
+	const password = 'wibble321'
+
+	const hashedPWD = '$2a$10$ABfKLuwnbL0obK/zhv4xPOShlJYb9T0TanVnRqWoyU57dm1ukS9Ce'
+
+	const isMatch = await bcrypt.compare(password, hashedPWD)
+	console.log(isMatch)
+}
+testing()
+
 const Mutation = {
+	async userLogin(parent, {credentials: {email, password}}, {prisma}, info) {
+		const user = await prisma.query.user({
+			where: {
+				email
+			}
+		})
+
+		if (!user) {
+			throw new Error('Unable to login')
+		}
+
+		const isMatch = bcrypt.compare(password, user.password)
+
+		if (!isMatch) {
+			// good idea to keep message generic
+			throw new Error('Unable to login')
+		}
+
+		return {
+			user,
+			token: jwt.sign({userid: user.id}, 'wibble123')
+		}
+	},
 	async createUser(parent, {data: {name, email, password}}, {prisma}, info) {
 		// data is the name given to the object in schema.graphql
 		if (password.length < 8) {
