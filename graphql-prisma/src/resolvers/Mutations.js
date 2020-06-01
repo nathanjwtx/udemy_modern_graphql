@@ -6,6 +6,8 @@ api running on localhost:4466 */
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
+import { getUserId } from '../utils/getUserId'
+
 const testing = async () => {
 	const email = 'doge@email.io'
 	const password = 'wibble321'
@@ -86,22 +88,17 @@ const Mutation = {
 
 		return prisma.mutation.deleteUser({where: {id}}, info)
 	},
-	async createPost(parents, args, { prisma }, info) {
-		// check user exists and throw an error if not
-		const userExists = await prisma.exists.User({ id: args.data.author })
-
-		if (!userExists) {
-			throw new Error('user not found')
-		}
+	async createPost(parents, { data }, { prisma, request }, info) {
+		const userId = getUserId(request)
 
 		return prisma.mutation.createPost({
 			data: {
-				title: args.data.title,
-				body: args.data.body,
-				published: args.data.published,
+				title: data.title,
+				body: data.body,
+				published: data.published,
 				author: {
 					connect: {
-						id: args.data.author
+						id: userId
 					}
 				}
 			}}, info)
