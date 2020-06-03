@@ -1,9 +1,10 @@
 type Query {
     greeting(name: String): String!
     users(query: String): [User!]!
-    post: Post!
+    post(id: ID!): Post!
     posts(query: String): [Post!]!
     comments: [Comment!]!
+    me: User!
 }
 
 type Mutation {
