@@ -5,11 +5,12 @@ const Query = {
 	async me(parent, args, { prisma, request }, info) {
 		const userId = getUserId(request)
 
-		return prisma.query.users({
-			where: {
-				id: userId
-			}
-		}, info)
+		const user = await prisma.query.users({
+				where: {
+					id: userId
+				}
+			}, info)
+		return user[0]
 	},
 	users(parent, args, { prisma }, info) {
 		const opArgs = {}
