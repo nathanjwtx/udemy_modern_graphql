@@ -27,6 +27,7 @@ const Query = {
 
 		return prisma.query.users(opArgs, info)
 	},
+	// published posts are public. logged in users can see their unpublished posts
 	async post(parent, { id }, { prisma, request}, info) {
 		const userId = getUserId(request, false)
 
@@ -49,18 +50,35 @@ const Query = {
 
 		return posts[0]
 	},
+	// all posts for logged in user - could add filtering as in 'posts' below
+	usersPosts(parent, args, { prisma, request }, info) {
+		const userId = getUserId(request)
+
+		const opArgs = {
+			where: {
+				author: {
+					id: userId
+				}
+			}
+		}
+
+		return prisma.query.posts(opArgs, info)
+	},
+	// public posts
 	posts(parent, args, { prisma, request }, info) {
-		const opArgs = {}
+		const opArgs = {
+			where: {
+				published: true
+			}
+		}
 
 		if (args.query) {
-			opArgs.where = {
-				OR: [{
+			opArgs.where.OR = [{
 					body_contains: args.query
 				}, {
 					title_contains: args.query
 				}]
 			}
-		}
 
 		return prisma.query.posts(opArgs, info)
 	},
